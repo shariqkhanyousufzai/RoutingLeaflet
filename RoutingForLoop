@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet</title>
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+	<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+	<style type="text/css">
+	#mapid { height: 500px; }
+	.leaflet-top{
+		display: none;
+	}
+	.google-map-a{
+		margin: 0% 5% 0% 0%;
+	}
+	</style>
+</head>
+<body>
+	 <div id="mapid"></div>
+	<!-- Modal -->
+	<div id="myModal" class="modal fade" role="dialog">
+	  <div class="modal-dialog">
+
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title">Address Information</h4>
+	      </div>
+	      <div class="modal-body">
+	        <div class="row">
+	        	<div class="col-sm-12">
+	        		<div><label>Address:</label><span class="address"></span></div>
+	        	</div>
+	        	<div class="col-sm-6">
+	        		<label>Latitude:</label><div class="lat"></div>
+	        	</div>
+	        	<div class="col-sm-6">
+	        		<label>Longitude:</label><div class="lon"></div>
+	        	</div>
+	        	<div class="col-sm-4">
+	        		<label>Time</label>
+	        		<span class="time"></span>
+	        	</div>
+	        	<div class="col-sm-12">
+	        	<div class="cordinate_div" class="mt-2" style="float: right;width: 45%;"></div>
+	        	</div>
+	        	
+	        </div>
+	        
+	        
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+
+	  </div>
+	</div>
+	 <script type="text/javascript">
+	 	//set the map center
+	 	var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+	 	//set the map center End
+	 	var AccessToken = 'pk.eyJ1IjoiZmlyZWJhc2V0ZXN0aW5nIiwiYSI6ImNqcmx0anZkNDBiNnA0NG1zazQzemp5OHcifQ.A0FvkJ2gt4z9nE4eyvSH5w';
+	 	//initializing the map
+	 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+		    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		    maxZoom: 18,
+		    id: 'mapbox.streets',
+		    accessToken: AccessToken,
+		}).addTo(mymap);
+		//initializing the map End
+		   var liveIcon = L.icon({
+			  iconUrl: 'test1.png',
+			  iconSize: [1, 1],
+			  iconAnchor: [22, 49],
+			  popupAnchor: [-3, -76],
+			  shadowSize: [68, 95],
+			  shadowAnchor: [22, 94]
+		});
+		 var routeControl = L.Routing.control({
+                createMarker: function(i, wp, nWps) {
+                if (i === 0 || i === nWps - 1) {
+                  // here change the starting and ending icons
+                  return L.marker(wp.latLng, {
+                    icon: liveIcon // here pass the custom marker icon instance
+                  });
+                } else {
+                  // here change all the others
+                  return L.marker(wp.latLng, {
+                    icon: liveIcon
+                  });
+                }
+              }
+            }).addTo(mymap);
+		 var route = new Array();
+		  </script>
+		 <?php
+
+		 $data = array(
+		 	array(
+		 		'lat' => '22.552649',
+	            'lon' => '113.948700',
+	            'created' => '2019-10-20 00:00:00'
+		 	),
+		 	array(
+		 		'lat' => '23.552649',
+	            'lon' => '113.948700',
+	            'created' => '2019-10-20 00:00:00'
+		 	),
+		 	array(
+		 		'lat' => '24.552649',
+	            'lon' => '113.948700',
+	            'created' => '2019-10-20 00:00:00'
+		 	),
+		 	array(
+		 		'lat' => '25.552649',
+	            'lon' => '113.948700',
+	            'created' => '2019-10-20 00:00:00'
+		 	),
+		 	array(
+		 		'lat' => '26.552649',
+	            'lon' => '113.948700',
+	            'created' => '2019-10-20 00:00:00'
+		 	),
+		 );
+		 $jsonEncode = json_decode(json_encode($data));
+		 foreach ($jsonEncode as $key) {
+		 	$popUp = '<div align="center"><div><b>Time:</b>"'.$key->created.'"</div><button type="button" class="btn btn-dark btn-sm locateit" data-lat="'.$key->lat.'" data-lon="'.$key->lon.'">Locate It</button></div>';
+         	echo "<script>var marker = L.marker([".$key->lat.",".$key->lon."]).addTo(mymap).bindPopup('".$popUp."').openPopup();</script>";
+         }
+		 $route = 1;
+         foreach ($jsonEncode as $key) {
+            if ($route == 1) {
+             echo "<script>route.push(new L.LatLng(".$key->lat.",".$key->lon."));</script>";
+            }else
+            {
+             echo "<script>route.push(new L.LatLng(".$key->lat.",".$key->lon."));</script>";
+            }
+            $route++;
+         };
+
+        
+         ?>
+
+		<script>
+		routeControl.setWaypoints(route);
+		$(document).delegate('.locateit','click',function()
+			{
+			lat = $(this).data('lat');
+			lon = $(this).data('lon');
+			console.log(lat);
+			console.log(lon);
+			$.getJSON('https://api.mapbox.com/geocoding/v5/mapbox.places/'+lon+','+lat+'.json?access_token='+AccessToken, function(data) {
+				$('.lat').html(lat);
+				$('.lon').html(lon);
+				$('.time').html("2019-11-12");
+				$('.address').html(data.features[0].place_name);
+				$('.cordinate_div').html('<a class="google-map-a" href="https://www.google.com/maps?z=12&t=k&q='+lat+','+lon+'" target="_blank"><i class="mdi mdi-google-maps font-14"></i>Google Map</a><a class="ml-3" href="https://www.bing.com/maps?&ty=18&q='+lat+','+lon+'&mb='+lat+'~'+lon+'~'+lat+'~'+lon+'&tt='+lat+','+lon+'&tstt0='+lat+','+lon+'&cp=ph5r04578ktr&lvl=18&style=b&ftst=0&ftics=False&v=2&sV=1&form=S00027" target="_blank"><i class="mdi mdi-map font-13"></i>Bing Map</a>');
+				$('#myModal').modal('show');
+			});
+			});
+	 </script>
+</body>
+</html>
